@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../prisma/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade, name: "AccountToUser")
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, name: "SessionToUser")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model User {
+  id            String        @id @default(cuid())
+  name          String?
+  role          Enum_RoleName @default(USER)
+  email         String?       @unique
+  emailVerified DateTime?     @map("email_verified")
+  image         String?
+  accounts      Account[]     @relation(name: "AccountToUser")
+  sessions      Session[]     @relation(name: "SessionToUser")
+  deleted       Boolean       @default(false)
+  enabled       Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+enum Enum_RoleName {
+  ADMIN
+  USER
+}
+
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  orders    Order[]
+  payments  Payment[]
+  receipts  Receipt[]
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String
+  description String
+  price       Float
+  image       String
+  stock       Int
+  enabled     Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+  items       OrderItem[]
+}
+
+model Order {
+  id        String      @id @default(cuid())
+  idClient  String
+  client    Client      @relation(fields: [idClient], references: [id])
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+  total     Float
+  tax       Float
+  subtotal  Float
+  payment   Payment[]
+  receipt   Receipt?
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  idOrder   String
+  order     Order    @relation(fields: [idOrder], references: [id])
+  idProduct String
+  product   Product  @relation(fields: [idProduct], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  receipt   Receipt? @relation(fields: [receiptId], references: [id])
+  receiptId String?
+}
+
+model Receipt {
+  id        String      @id @default(cuid())
+  idOrder   String      @unique
+  order     Order       @relation(fields: [idOrder], references: [id])
+  idClient  String
+  client    Client      @relation(fields: [idClient], references: [id])
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+  total     Float
+  tax       Float
+  subtotal  Float
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  image       String
+  enabled     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  products    Product[]
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  type      PaymentType
+  status    PaymentStatus @default(PENDING)
+  amount    Float
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  idOrder   String
+  order     Order         @relation(fields: [idOrder], references: [id])
+  idClient  String
+  client    Client        @relation(fields: [idClient], references: [id])
+  data      DataPayment?
+}
+
+model DataPayment {
+  id        String   @id @default(cuid())
+  response  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  idPayment String   @unique
+  payment   Payment  @relation(fields: [idPayment], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+}
+
+enum PaymentType {
+  CASH
+  CREDIT_CARD
+  DEBIT_CARD
+  TRANSFER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+  REFUNDED
+  FAILED
+}
