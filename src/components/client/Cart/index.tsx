@@ -260,7 +260,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              <Button className="w-full bg-gradient-primary hover:opacity-90 text-white font-medium py-3">
+              <Button className="w-full bg-primary hover:opacity-90 text-white font-medium py-3">
                 Proceder al pago
               </Button>
               

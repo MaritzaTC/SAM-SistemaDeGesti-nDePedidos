@@ -28,9 +28,7 @@ const index = () => {
             <a href="#" className="text-foreground hover:text-primary transition-colors duration-200">
               Mujer
             </a>
-            <a href="#" className="text-foreground hover:text-primary transition-colors duration-200">
-              Accesorios
-            </a>
+            
            
           </nav>
 

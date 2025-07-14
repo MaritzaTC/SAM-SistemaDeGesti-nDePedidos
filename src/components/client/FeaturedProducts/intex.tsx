@@ -16,7 +16,7 @@ const FeaturedProducts = () => {
       reviews: 124,
       discount: 25,
       isNew: false,
-      isFavorite: false
+     // isFavorite: false
     },
     {
       id: 2,
@@ -26,7 +26,7 @@ const FeaturedProducts = () => {
       
       reviews: 89,
       isNew: true,
-      isFavorite: true
+     // isFavorite: true
     },
     {
       id: 3,
@@ -37,7 +37,7 @@ const FeaturedProducts = () => {
       reviews: 156,
       discount: 15,
       isNew: false,
-      isFavorite: false
+      //isFavorite: false
     },
     {
       id: 4,
@@ -46,7 +46,7 @@ const FeaturedProducts = () => {
       image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       reviews: 78,
       isNew: true,
-      isFavorite: false
+     // isFavorite: false
     }
   ];
 

@@ -1,4 +1,4 @@
-import { Heart, ShoppingBag} from "lucide-react";
+import {  ShoppingBag} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,7 +24,7 @@ const ProductCard = ({
   //reviews,
   discount,
   isNew,
-  isFavorite = false
+  //isFavorite = false
 }: ProductCardProps) => {
   return (
     <div className="card-product group relative">
@@ -50,7 +50,7 @@ const ProductCard = ({
           )}
         </div>
 
-        {/* Favorite Button */}
+        {/* Favorite Button
         <Button
           size="icon"
           variant="ghost"
@@ -61,7 +61,7 @@ const ProductCard = ({
           }`}
         >
           <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
-        </Button>
+        </Button> */}
 
         {/* Quick Add Overlay */}
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
