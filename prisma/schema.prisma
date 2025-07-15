@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../prisma/generated"
 }
 
 datasource db {
@@ -43,17 +42,35 @@ model Session {
 
 model User {
   id            String        @id @default(cuid())
+  createdAt     DateTime      @default(now())
+  email         String        @unique
+  emailVerified DateTime?     // <-- Agrega esta línea
+  role          Enum_RoleName @default(CLIENTE)
+  documentType  String?
+  documentNumber String?
   name          String?
-  role          Enum_RoleName @default(USER)
-  email         String?       @unique
-  emailVerified DateTime?     @map("email_verified")
+  lastName      String?
+  phone         String?
   image         String?
+  addresses     Address[]
   accounts      Account[]     @relation(name: "AccountToUser")
   sessions      Session[]     @relation(name: "SessionToUser")
   deleted       Boolean       @default(false)
   enabled       Boolean       @default(true)
-  createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+}
+
+model Address {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  department   String
+  municipality String
+  neighborhood String
+  address      String
+  info         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -66,7 +83,8 @@ model VerificationToken {
 
 enum Enum_RoleName {
   ADMIN
-  USER
+  EMPLEADO
+  CLIENTE
 }
 
 model Client {
@@ -80,19 +98,47 @@ model Client {
   receipts  Receipt[]
 }
 
+enum CategoryType {
+  CAMISETAS
+  JEANS
+  BUZOS
+  FALDAS
+  VESTIDOS
+}
+
+model Category {
+  id          String        @id @default(cuid())
+  name        CategoryType
+  description String
+  image       String
+  enabled     Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  products    Product[]
+}
+
 model Product {
   id          String      @id @default(cuid())
   name        String
-  description String
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
   price       Float
+  discount    Float       @default(0)
   image       String
+  isNew       Boolean     @default(false)
   stock       Int
   enabled     Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  categoryId  String
-  category    Category    @relation(fields: [categoryId], references: [id])
+  sizes       Size[]
   items       OrderItem[]
+}
+
+model Size {
+  id        String   @id @default(cuid())
+  name      String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
@@ -136,17 +182,6 @@ model Receipt {
   total     Float
   tax       Float
   subtotal  Float
-}
-
-model Category {
-  id          String    @id @default(cuid())
-  name        String
-  description String
-  image       String
-  enabled     Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  products    Product[]
 }
 
 model Payment {
