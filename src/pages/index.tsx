@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Footer from "@/components/client/Footer";
 import FeaturedProducts from "@/components/client/FeaturedProducts/intex";
 import Features from "@/components/client/Features";
@@ -21,7 +22,7 @@ const Home = () => (
   </main>
 );
 
-Home.noAuth = true;
-Home.noLayout = false;
-
+// Home.noAuth = true;
+// Home.noLayout = false;
+(Home as any).noAuth = true;
 export default Home;
