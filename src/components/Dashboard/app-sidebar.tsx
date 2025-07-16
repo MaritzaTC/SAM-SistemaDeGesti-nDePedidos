@@ -2,14 +2,13 @@ import * as React from 'react';
 import {
   IconCreditCard,
   IconDashboard,
-  IconInnerShadowTop,
   IconPackage,
-IconPlus,
   IconSettings,
   IconShoppingBag,
-
 } from '@tabler/icons-react';
 
+import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 
 import { NavMain } from '@/components/Dashboard/nav-main';
 import { NavSecondary } from '@/components/Dashboard/nav-secondary';
@@ -24,72 +23,102 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
-const data = {
-  user: {
-    name: 'shadcn',
-    email: 'm@example.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  navMain: [
+import { Button } from '../ui/button';
+
+type User = {
+  name: string;
+  email: string;
+  image?: string;
+  role?: string;
+};
+
+export function AppSidebar({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: User }) {
+
+
+  const navMain = [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/admin/dashboard',
       icon: IconDashboard,
     },
     {
       title: 'Inventario',
-      url: '#',
+      url: '/admin/inventory',
       icon: IconPackage,
     },
     {
       title: 'Pedidos',
-      url: '#',
+      url: '/admin/orders',
       icon: IconShoppingBag,
     },
     {
       title: 'Transacciones',
-      url: '#',
+      url: '/admin/transactions',
       icon: IconCreditCard,
     },
-    {
-      title: 'Crear Pedido',
-      url: '#',
-      icon: IconPlus,
-    },
-  ],
+    // Solo para ADMIN
+    ...(user.role === 'ADMIN'
+      ? [
+          {
+            title: 'Usuarios',
+            url: '/admin/users',
+            icon: IconCreditCard,
+          },
+          {
+            title: 'Reportes',
+            url: '/admin/reports',
+            icon: IconCreditCard,
+          },
+        ]
+      : []),
+  ];
 
-  navSecondary: [
+  const navSecondary = [
     {
       title: 'Configuración',
       url: '#',
       icon: IconSettings,
     },
-  ],
+  ];
 
-};
-
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible='offcanvas' {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild className='data-[slot=sidebar-menu-button]:!p-1.5'>
-              <a href='#'>
-                <IconInnerShadowTop className='!size-5' />
-                <span className='text-base font-semibold'>Acme Inc.</span>
+            <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
+              <a href="#">
+                <Image
+                  src="/logo.png"
+                  alt="Logo"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+                <span className="text-base font-semibold">SAM</span>
               </a>
             </SidebarMenuButton>
-            <NavUser user={data.user} />
+            <NavUser user={{ name: user.name, email: user.email, avatar: user.image ?? '/default-avatar.png' }} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className='mt-auto' />
+        <NavMain items={navMain} />
+        <NavSecondary items={navSecondary} className="mt-auto" />
       </SidebarContent>
+
       <SidebarFooter>
-      Cerrar Sesión
+        <Button
+          className="w-full"
+          variant="outline"
+          onClick={() => signOut({ callbackUrl: '/' })}
+        >
+          Cerrar sesión
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
