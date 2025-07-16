@@ -1,17 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
 declare global {
+  // Esto permite que TypeScript entienda la variable global
   // eslint-disable-next-line no-var
-  var prismaGlobal: PrismaClient | undefined;
+  var prisma: PrismaClient | undefined;
 }
 
-let prisma: PrismaClient;
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient();
-} else {
-  if (!global.prismaGlobal) {
-    global.prismaGlobal = new PrismaClient();
-  }
-  prisma = global.prismaGlobal;
-}
+const prisma = global.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+
 export default prisma;
