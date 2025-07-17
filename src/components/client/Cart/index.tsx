@@ -85,6 +85,29 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
     }).format(price);
   };
 
+  // Stripe Checkout handler
+  const handleStripeCheckout = async () => {
+    try {
+      const response = await fetch("/api/payment/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: total, // El total en COP (asegúrate que tu backend lo espera en centavos)
+          currency: "cop",
+        }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Error al iniciar el pago");
+      }
+    } catch (error) {
+      console.error("Stripe checkout error:", error);
+      alert("Hubo un problema al conectar con Stripe");
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -260,7 +283,10 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 </div>
               </div>
 
-              <Button className="w-full bg-primary hover:opacity-90 text-white font-medium py-3">
+              <Button
+                className="w-full bg-primary hover:opacity-90 text-white font-medium py-3"
+                onClick={handleStripeCheckout}
+              >
                 Proceder al pago
               </Button>
               
@@ -276,7 +302,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
     </div>
-  );
+      );
 };
 
 export default Cart;
