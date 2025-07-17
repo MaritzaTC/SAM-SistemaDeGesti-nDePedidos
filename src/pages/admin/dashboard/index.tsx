@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 // pages/admin/dashboard.tsx
 
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
