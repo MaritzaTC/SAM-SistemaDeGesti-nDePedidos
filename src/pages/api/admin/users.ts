@@ -96,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     phone: true,
                     documentType: true,
                     name: true,
-
+                    image: true,
                     lastName: true,
                     documentNumber: true,
                     role: true,
@@ -119,6 +119,7 @@ if (req.method === "PATCH") {
     phone,
     documentType,
     documentNumber,
+   image,
   } = req.body;
 
   if (!email) {
@@ -135,6 +136,7 @@ if (req.method === "PATCH") {
         ...(phone && { phone }),
         ...(documentType && { documentType }),
         ...(documentNumber && { documentNumber }),
+        ...(image && { image }),
       },
     });
 

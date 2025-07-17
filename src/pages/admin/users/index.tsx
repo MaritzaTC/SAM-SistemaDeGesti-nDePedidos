@@ -32,9 +32,10 @@ import {  Search, Edit, UserPlus, Shield, User, Crown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+
 import { Badge } from "@/components/ui/badge";
 import { UserForm } from "@/components/admin/UserForm";
+
 const Index = () => {
   const { data: session, status } = useSession();
 
@@ -385,16 +386,19 @@ const Index = () => {
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((user, index) => (
                     <TableRow key={user.id || index}>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Avatar>
-                            <AvatarImage src={user.image || ''} />
-                            <AvatarFallback >{user.name?.[0] ?? 'U'}</AvatarFallback>
-                          </Avatar>
+                  <TableCell>
+  <div className="flex flex-col items-center justify-center space-y-1">
+    <img
+      src={user.image || '/default-user.png.jpg'}
+      alt={`Foto de ${user.name}`}
+      width={40}
+      height={40}
+      className="rounded-full object-cover"
+    />
+    <span className="text-sm text-center">{user.name || 'Sin nombre'}</span>
+  </div>
+</TableCell>
 
-                          <span>{user.name || 'Sin nombre'}</span>
-                        </div>
-                      </TableCell>
                       <TableCell>{user.email || '—'}</TableCell>
 
                       <TableCell>
