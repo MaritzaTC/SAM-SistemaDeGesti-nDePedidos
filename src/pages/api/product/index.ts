@@ -13,10 +13,10 @@ export default async function handler(
 
   if (req.method === "POST") {
     // Crear un producto
-    const { name, categoryId, price, discount, image, isNew, stock } = req.body;
+    const { name, category, price, discount, image, isNew, stock } = req.body;
     try {
       const product = await prisma.product.create({
-        data: { name, categoryId, price, discount, image, isNew, stock },
+        data: { name, category, price, discount, image, isNew, stock },
       });
       return res.status(201).json(product);
     } catch (error: unknown) {

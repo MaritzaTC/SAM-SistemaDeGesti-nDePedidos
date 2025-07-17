@@ -98,30 +98,12 @@ model Client {
   receipts  Receipt[]
 }
 
-enum CategoryType {
-  CAMISETAS
-  JEANS
-  BUZOS
-  FALDAS
-  VESTIDOS
-}
 
-model Category {
-  id          String        @id @default(cuid())
-  name        CategoryType
-  description String
-  image       String
-  enabled     Boolean       @default(true)
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  products    Product[]
-}
 
 model Product {
   id          String      @id @default(cuid())
   name        String
-  categoryId  String
-  category    Category    @relation(fields: [categoryId], references: [id])
+  category    String    
   price       Float
   discount    Float       @default(0)
   image       String
