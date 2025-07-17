@@ -104,10 +104,10 @@ const Header = () => {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/profile">Mi Perfil</Link>
+                      <Link href="/customer/profile">Mi Perfil</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/orders">Mis Pedidos</Link>
+                      <Link href="/customer/orders">Mis Pedidos</Link>
                     </DropdownMenuItem>
                     {(user.role === "ADMIN" || user.role === "EMPLEADO") && (
                       <DropdownMenuItem asChild>
