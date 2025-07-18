@@ -9,7 +9,12 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+
+const statusOptions = [
+  { label: "Pendiente", value: "PENDING" },
+  { label: "Completado", value: "COMPLETED" },
+  { label: "Cancelado", value: "CANCELED" },
+];
 
 type Order = {
   id: string;
@@ -60,6 +65,28 @@ const OrderTable: React.FC = () => {
     setFilteredOrders(filtered);
   }, [statusFilter, search, orders]);
 
+  // Nueva función para actualizar el estado
+  const handleStatusChange = async (orderId: string, newStatus: string) => {
+    try {
+      const res = await fetch(`/api/order/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        // Actualiza el estado localmente
+        setOrders((prev) =>
+          prev.map((order) =>
+            order.id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error al actualizar el estado del pedido:", error);
+      alert("Error al actualizar el estado del pedido");
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -102,9 +129,21 @@ const OrderTable: React.FC = () => {
                     <TableCell>{order.client?.name}</TableCell>
                     <TableCell>{order.client?.email}</TableCell>
                     <TableCell>
-                      <Badge className={statusColors[order.status] || ""}>
-                        {order.status}
-                      </Badge>
+                      <select
+                        className={`rounded px-2 py-1 ${
+                          statusColors[order.status] || ""
+                        }`}
+                        value={order.status}
+                        onChange={(e) =>
+                          handleStatusChange(order.id, e.target.value)
+                        }
+                      >
+                        {statusOptions.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
                     </TableCell>
                     <TableCell>
                       {new Date(order.createdAt).toLocaleDateString()}
