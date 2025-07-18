@@ -1,14 +1,22 @@
 // pages/admin/dashboard.tsx
 
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, AwaitedReactNode } from "react";
+import OrderTable from "@/components/admin/OrderTable";
+import { ReactElement } from "react";
 
-
-const index = () => {
-  return <div>Empleado</div>;
+const OrdersPage = () => {
+  return (
+    <div className="container mx-auto px-4 py-8 space-y-6">
+      <h1 className="text-3xl font-bold text-foreground">Pedidos</h1>
+      <p className="text-muted-foreground mb-6">
+        Gestiona y revisa todos los pedidos realizados en la tienda.
+      </p>
+      <OrderTable />
+    </div>
+  );
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-index.getLayout = (page: string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default index;
+OrdersPage.getLayout = (page: ReactElement) => (
+  <DashboardLayout>{page}</DashboardLayout>
+);
+export default OrdersPage;
