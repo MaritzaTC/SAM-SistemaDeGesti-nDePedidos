@@ -6,9 +6,20 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    // Listar todos los pedidos
+    // Permite filtrar por email de cliente
+    const { email } = req.query;
+    let where = {};
+    if (email) {
+      where = { client: { email: String(email) } };
+    }
     const orders = await prisma.order.findMany({
-      include: { client: true, items: true, payment: true, receipt: true },
+      where,
+      include: {
+        client: true,
+        items: { include: { product: true } },
+        payment: true,
+        receipt: true,
+      },
     });
     return res.status(200).json(orders);
   }
