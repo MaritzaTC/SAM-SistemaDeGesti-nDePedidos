@@ -252,7 +252,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 className="w-full bg-primary hover:opacity-90 text-white font-medium py-3"
                 onClick={handleStripeCheckout}
               >
-                Proceder al pago
+                Finalizar la compra
               </Button>
 
               <Button

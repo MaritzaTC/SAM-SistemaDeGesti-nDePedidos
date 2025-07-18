@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 
 export default function CheckoutAddress() {
   const { data: session } = useSession();
-
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -62,74 +61,116 @@ export default function CheckoutAddress() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-12 p-8 bg-white shadow-lg rounded-2xl">
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6 text-center">Datos de Envío</h2>
-      <form onSubmit={handleStripeCheckout} className="space-y-5">
-        <div className="grid grid-cols-1 gap-4">
-          <input
-            name="nombre"
-            placeholder="Nombre completo"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.nombre}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="telefono"
-            placeholder="Teléfono"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.telefono}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="department"
-            placeholder="Departamento"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.department}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="municipality"
-            placeholder="Municipio"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.municipality}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="neighborhood"
-            placeholder="Barrio"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.neighborhood}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="address"
-            placeholder="Dirección"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
-          <input
-            name="info"
-            placeholder="Información adicional"
-            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.info}
-            onChange={handleChange}
-          />
+    <div className="min-h-screen bg-white px-4 py-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
+        {/* Formulario */}
+        <div className="md:col-span-2">
+          <h2 className="text-xl font-bold text-blue-900 mb-2">INFORMACIÓN DE ENVÍO</h2>
+          <p className="text-sm text-gray-500 mb-6">
+            Solicitamos únicamente la información esencial para la finalización de la compra.
+          </p>
+
+          <form onSubmit={handleStripeCheckout} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <input
+                name="nombre"
+                placeholder="Nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+              <input
+                name="telefono"
+                placeholder="Teléfono / Móvil"
+                value={formData.telefono}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+              <input
+                name="department"
+                placeholder="Departamento"
+                value={formData.department}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+              <input
+                name="municipality"
+                placeholder="Municipio"
+                value={formData.municipality}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+              <input
+                name="neighborhood"
+                placeholder="Barrio"
+                value={formData.neighborhood}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+              <input
+                name="address"
+                placeholder="Dirección"
+                value={formData.address}
+                onChange={handleChange}
+                required
+                className="border-b border-blue-900 p-2 outline-none"
+              />
+            </div>
+            <input
+              name="info"
+              placeholder="Información adicional (opcional)"
+              value={formData.info}
+              onChange={handleChange}
+              className="border-b border-blue-900 p-2 outline-none w-full"
+            />
+
+            <button
+              type="submit"
+              className="bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 px-6 rounded-lg transition-all"
+            >
+              Siguiente
+            </button>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-300"
-        >
-          Proceder al pago
-        </button>
-      </form>
+        {/* Resumen de la compra */}
+        <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-bold text-blue-800 mb-4 text-center">RESUMEN DE LA COMPRA</h3>
+          <div className="flex items-center mb-4">
+            <img
+              src="/example-product.jpg" // Reemplaza con la imagen real
+              alt="Producto"
+              className="w-20 h-20 object-cover rounded-lg mr-4"
+            />
+            <div>
+              <p className="font-semibold text-sm">.......</p>
+              <p className="text-sm">Cantidad: <strong>1</strong></p>
+              <p className="text-sm text-blue-600">$ 369.600</p>
+              <p className="text-xs text-gray-500">Hasta 8 días hábiles</p>
+            </div>
+          </div>
+
+          <div className="border-t pt-4 text-sm">
+            <div className="flex justify-between mb-2">
+              <span>Subtotal</span>
+              <span>${total.toLocaleString("es-CO")}</span>
+            </div>
+            <div className="flex justify-between mb-4">
+              <span>Gastos del envío</span>
+              <span className="text-green-600 font-semibold">Gratis</span>
+            </div>
+            <div className="flex justify-between text-lg font-bold text-blue-900 border-t pt-3">
+              <span>Total</span>
+              <span>${total.toLocaleString("es-CO")}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
