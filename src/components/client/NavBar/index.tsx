@@ -42,14 +42,13 @@ const Header = () => {
               <h1 className="text-2xl font-playfair font-bold text-gradient">SAM</h1>
             </div>
 
-            {/* Navigation - Desktop */}
+           
             <nav className="hidden md:flex items-center space-x-8">
-              <Link href="#" className="text-foreground hover:text-primary transition-colors duration-200">
+              <Link href="/customer/products" className="text-foreground hover:text-primary transition-colors duration-200">
                 Nuevo
               </Link>
-              <Link href="#" className="text-foreground hover:text-primary transition-colors duration-200">
-                Mujer
-              </Link>
+              <Link href="/" className="text-foreground hover:text-primary transition-colors duration-200">
+Todo              </Link>
             </nav>
 
             {/* Actions */}
