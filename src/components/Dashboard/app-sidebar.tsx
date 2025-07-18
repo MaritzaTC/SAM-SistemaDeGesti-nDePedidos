@@ -36,7 +36,13 @@ export function AppSidebar({
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & { user: User }) {
+ const [isClient, setIsClient] = React.useState(false)
 
+  React.useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) return null 
 
   const navMain = [
     {
@@ -101,7 +107,7 @@ export function AppSidebar({
                 <span className="text-base font-semibold">SAM</span>
               </a>
             </SidebarMenuButton>
-            <NavUser user={{ name: user.name, email: user.email, avatar: user.image ?? '/default-avatar.png' }} />
+            <NavUser user={{ name: user.name, email: user.email, image: user.image ?? '/default-avatar.png' }} />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>

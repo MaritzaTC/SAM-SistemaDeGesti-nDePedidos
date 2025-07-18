@@ -1,21 +1,11 @@
-import React, { useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import React from "react";
 import { X, Plus, Minus, ShoppingBag, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
-import { useSession, signIn } from "next-auth/react"; // ✅ Importación añadida
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  originalPrice?: number;
-  size: string;
-  color: string;
-  quantity: number;
-  image: string;
-  inStock: boolean;
-}
+import { useSession, signIn } from "next-auth/react";
+import { useCart } from "../CartContext";
 
 interface CartProps {
   isOpen: boolean;
@@ -23,82 +13,49 @@ interface CartProps {
 }
 
 const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
-  const { data: session } = useSession(); // ✅ Obtiene la sesión
+  const { data: session } = useSession();
+  const {
+    cartItems,
+    removeFromCart,
+    updateCartItemQuantity,
+  } = useCart();
 
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: "1",
-      name: "Vestido Midi Elegante",
-      price: 89900,
-      originalPrice: 119900,
-      size: "M",
-      color: "Negro",
-      quantity: 1,
-      image: "/placeholder.svg",
-      inStock: true,
-    },
-    {
-      id: "2",
-      name: "Blusa de Seda Premium",
-      price: 64900,
-      size: "S",
-      color: "Blanco",
-      quantity: 2,
-      image: "/placeholder.svg",
-      inStock: true,
-    },
-    {
-      id: "3",
-      name: "Zapatos Oxford",
-      price: 149900,
-      size: "38",
-      color: "Marrón",
-      quantity: 1,
-      image: "/placeholder.svg",
-      inStock: false,
-    },
-  ]);
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      removeItem(id);
-      return;
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeFromCart(id);
+    } else {
+      updateCartItemQuantity(id, quantity);
     }
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id));
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal >= 150000 ? 0 : 15000;
-  const total = subtotal + shipping;
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-CO", {
+  const discountAmount = cartItems.reduce((sum, item) => {
+    if (item.discount) {
+      const itemDiscount = (item.price * item.discount / 100) * item.quantity;
+      return sum + itemDiscount;
+    }
+    return sum;
+  }, 0);
+
+  const shipping = subtotal >= 150000 ? 0 : 15000;
+  const total = subtotal + shipping - discountAmount;
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("es-CO", {
       style: "currency",
       currency: "COP",
       minimumFractionDigits: 0,
     }).format(price);
-  };
 
-  // ✅ Modificado: Verifica sesión antes de iniciar Stripe
   const handleStripeCheckout = () => {
-  if (!session) {
-    return signIn("auth0", { callbackUrl: "/admin/checkout/address" }); // ✅ Luego de login, va a formulario
-  }
+    if (!session) {
+      return signIn("auth0", { callbackUrl: "/admin/checkout/address" });
+    }
 
-   sessionStorage.setItem("checkoutTotal", total.toString());
-
-  // Ya está logueado → redirige al formulario de dirección
-  window.location.href = "/admin/checkout/address";
-};
-
+    sessionStorage.setItem("checkoutTotal", total.toString());
+    window.location.href = "/admin/checkout/address";
+  };
 
   if (!isOpen) return null;
 
@@ -141,7 +98,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
               </div>
             ) : (
               <div className="space-y-4">
-                {cartItems.map(item => (
+                {cartItems.map((item) => (
                   <Card key={item.id} className="bg-card/50 border-border/30">
                     <CardContent className="p-4">
                       <div className="flex space-x-4">
@@ -160,16 +117,14 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => removeItem(item.id)}
+                              onClick={() => removeFromCart(item.id)}
                               className="h-6 w-6 hover:bg-destructive/10 hover:text-destructive"
                             >
                               <X className="h-4 w-4" />
                             </Button>
                           </div>
-                          <div className="text-xs text-muted-foreground mb-2">
-                            Talla: {item.size} • Color: {item.color}
-                          </div>
-                          {!item.inStock && (
+
+                          {!item.stock && (
                             <div className="text-xs text-destructive mb-2">Sin stock disponible</div>
                           )}
                           <div className="flex items-center justify-between">
@@ -178,9 +133,9 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                 <span className="font-semibold text-foreground">
                                   {formatPrice(item.price)}
                                 </span>
-                                {item.originalPrice && (
+                                {item.price && (
                                   <span className="text-xs text-muted-foreground line-through">
-                                    {formatPrice(item.originalPrice)}
+                                    {formatPrice(item.price)}
                                   </span>
                                 )}
                               </div>
@@ -190,7 +145,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                disabled={item.quantity <= 1 || !item.inStock}
+                                disabled={item.quantity <= 1}
                                 className="h-8 w-8"
                               >
                                 <Minus className="h-3 w-3" />
@@ -202,7 +157,7 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                                 variant="outline"
                                 size="icon"
                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                disabled={!item.inStock}
+                                disabled={item.quantity >= item.stock}
                                 className="h-8 w-8"
                               >
                                 <Plus className="h-3 w-3" />
@@ -225,6 +180,10 @@ const Cart: React.FC<CartProps> = ({ isOpen, onClose }) => {
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
                   <span className="font-medium">{formatPrice(subtotal)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Descuento</span>
+                  <span className="font-medium">{formatPrice(discountAmount)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">
