@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,7 +12,7 @@ import {
 import { supabase } from '@/lib/supabase';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () => void; onUpdate?: () => void }) => {
-    
+
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -56,29 +57,29 @@ export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () =
     return Object.keys(newErrors).length === 0;
   };
 
-const handleUploadImage = async (file: File): Promise<string | null> => {
-  const fileExt = file.name.split('.').pop();
-  const fileName = `${Date.now()}.${fileExt}`;
-  const filePath = `public/${fileName}`; // Carpeta accesible públicamente
+  const handleUploadImage = async (file: File): Promise<string | null> => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `public/${fileName}`; // Carpeta accesible públicamente
 
-  const { error } = await supabase.storage
-    .from('users')
-    .upload(filePath, file, {
-      cacheControl: '3600',
-      upsert: false,
-    });
+    const { error } = await supabase.storage
+      .from('users')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
 
-  if (error) {
-    console.error('❌ Error subiendo archivo a Supabase:', error);
-    return null;
-  }
+    if (error) {
+      console.error('❌ Error subiendo archivo a Supabase:', error);
+      return null;
+    }
 
-  // Obtener URL pública después de subida exitosa
-  const { data } = supabase.storage.from('users').getPublicUrl(filePath);
-  const publicUrl = data.publicUrl;
+    // Obtener URL pública después de subida exitosa
+    const { data } = supabase.storage.from('users').getPublicUrl(filePath);
+    const publicUrl = data.publicUrl;
 
-  return publicUrl;
-};
+    return publicUrl;
+  };
 
 
 
@@ -93,11 +94,11 @@ const handleUploadImage = async (file: File): Promise<string | null> => {
 
       // Si seleccionó una imagen nueva, subirla
       if (selectedFile) {
-  const uploadedUrl = await handleUploadImage(selectedFile); // ✅ pasa el archivo aquí
-  if (uploadedUrl) {
-    imageUrl = uploadedUrl;
-  }
-}
+        const uploadedUrl = await handleUploadImage(selectedFile); // ✅ pasa el archivo aquí
+        if (uploadedUrl) {
+          imageUrl = uploadedUrl;
+        }
+      }
 
 
       const res = await fetch('/api/admin/users', {
@@ -137,11 +138,11 @@ const handleUploadImage = async (file: File): Promise<string | null> => {
 
       <div className="flex items-center gap-4">
 
-<img
-  src={form.image || '/default-user.png.jpg'}
-  alt="Usuario"
-  className="w-16 h-16 rounded-full object-cover"
-/>
+        <img
+          src={form.image || '/default-user.png.jpg'}
+          alt="Usuario"
+          className="w-16 h-16 rounded-full object-cover"
+        />
         <Input
           type="file"
           onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
