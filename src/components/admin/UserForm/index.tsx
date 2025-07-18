@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/lib/supabase';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () => void; onUpdate?: () => void }) => {
+export const UserForm = ({ user, onClose, onUpdate,  isOwnProfile = false,}: { user: any; onClose: () => void; onUpdate?: () => void; isOwnProfile?: boolean;}) => {
 
   const [form, setForm] = useState({
     name: '',
@@ -123,7 +123,7 @@ export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () =
       <Input
         value={form.name}
         placeholder="Nombre"
-        onChange={(e) => setForm({ ...form, name: e.target.value })}
+       disabled
       />
       {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
 
@@ -178,7 +178,7 @@ export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () =
         onChange={(e) => setForm({ ...form, documentNumber: e.target.value })}
       />
       {errors.documentNumber && <p className="text-sm text-red-500">{errors.documentNumber}</p>}
-
+{!isOwnProfile && (
       <Select
         value={form.role}
         onValueChange={(value) => setForm({ ...form, role: value })}
@@ -192,7 +192,7 @@ export const UserForm = ({ user, onClose, onUpdate }: { user: any; onClose: () =
           <SelectItem value="CLIENTE">Cliente</SelectItem>
         </SelectContent>
       </Select>
-
+)}
       <div className="flex justify-end space-x-2">
         <Button variant="outline" onClick={onClose}>Cancelar</Button>
         <Button onClick={handleUpdate} disabled={loading}>

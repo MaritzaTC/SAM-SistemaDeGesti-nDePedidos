@@ -1,55 +1,43 @@
-import React from "react";
-import { useSession } from "next-auth/react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// pages/mi-perfil.tsx
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { UserForm } from '@/components/admin/UserForm'; // Asegúrate que este es el path correcto
+import { Skeleton } from '@/components/ui/skeleton';
 
 const MiPerfil = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!session) return <p className="text-center text-gray-500 mt-10">Cargando sesión...</p>;
+  const fetchUserProfile = async () => {
+    try {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      setUser(data);
+    } catch (err) {
+      console.error('Error cargando perfil:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const {
-    name,
-    email,
-    phone,
-    documentNumber,
-    lastName,
-  } = session.user;
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchUserProfile();
+    }
+  }, [status]);
+
+  if (status === 'loading' || loading) {
+    return <Skeleton className="h-60 w-full" />;
+  }
+
+  if (!user) return <p className="text-center text-red-500">No se pudo cargar el perfil</p>;
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header con degradado */}
-      <div className="w-full bg-gradient-to-r from-blue-200 to-blue-400 py-6 px-6 shadow">
-        <h1 className="text-3xl md:text-4xl font-bold text-white">PERFIL</h1>
-      </div>
-
-      {/* Contenedor de información */}
-      <div className="max-w-4xl mx-auto mt-8 bg-white shadow-md rounded-xl p-6 border">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10 text-gray-800 text-sm md:text-base">
-          <div>
-            <p className="font-semibold">Nombre</p>
-            <p>{name || "—"}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Apellido</p>
-            <p>{lastName || "—"}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Email</p>
-            <p>{email}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Cédula de ciudadanía</p>
-            <p>{documentNumber || "—"}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Teléfono</p>
-            <p>{phone || "—"}</p>
-          </div>
-        </div>
-      </div>
+    <div className="max-w-xl mx-auto mt-10 p-4 border rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4 text-center">Mi Perfil</h2>
+      <UserForm user={user} onClose={() => {}} onUpdate={fetchUserProfile} isOwnProfile={true} />
     </div>
   );
 };
