@@ -5,6 +5,16 @@ import { options } from "@/pages/api/auth/[...nextauth]";
 import prisma from "@/config/prisma";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  
+  if (req.method === "GET") {
+  try {
+    const products = await prisma.product.findMany();
+    return res.status(200).json(products);
+  } catch (err: any) {
+    return res.status(500).json({ message: err.message || "Error interno del servidor" });
+  }
+}
+
   const session = await getServerSession(req, res, options);
 
   type SessionUser = {

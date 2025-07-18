@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProductCard from "../ProductCard";
+
 import { useEffect, useState } from "react";
+import ProductCard from "@/components/client/ProductCard";
+import Link from "next/link";
 
 
 
@@ -29,6 +31,11 @@ const FeaturedProducts = () => {
   };
   return (
     <section className="py-16 bg-gradient-subtle">
+        <Link href={"/"} className="p-20">
+        <Button>
+             ← Volver atrás
+        </Button>
+        </Link>
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
@@ -43,7 +50,7 @@ const FeaturedProducts = () => {
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          {products.slice(0, visibleCount).map((product, index) => (
+          {products.filter(product => product.isNew === true).slice(0, visibleCount).map((product, index) => (
   <div
     key={product.id}
     className="animate-fade-up"

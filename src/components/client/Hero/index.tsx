@@ -1,7 +1,11 @@
-import { ArrowRight, Star } from "lucide-react";
+/* eslint-disable @next/next/no-img-element */
+import { ArrowRight,  Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 
 const Hero = () => {
+   
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden">
       {/* Background Image */}
@@ -39,14 +43,13 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-delay">
-            <Button className="btn-hero group">
+        <Link href="/customer/products">
+            <Button className="btn-hero group" >
               Explorar Colección
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            </Button></Link>
             
-            <Button className="btn-elegant">
-              Ver Lookbook
-            </Button>
+           
           </div>
 
      

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import {  ShoppingBag} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +19,6 @@ interface ProductCardProps {
 const ProductCard = ({
   name,
   price,
-  originalPrice,
   image,
   //rating,
   //reviews,
@@ -43,7 +43,7 @@ const ProductCard = ({
               Nuevo
             </Badge>
           )}
-          {discount && (
+          {discount !== undefined && discount > 0 && (
             <Badge className="bg-destructive text-destructive-foreground">
               -{discount}%
             </Badge>
@@ -99,19 +99,26 @@ const ProductCard = ({
         </h3>
 
         {/* Price */}
-        <div className="flex items-center gap-2">
-          <span className="text-lg font-semibold text-foreground">
-            ${price.toLocaleString()}
-          </span>
-          {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ${originalPrice.toLocaleString()}
-            </span>
-          )}
-        </div>
+        <div className="flex flex-col items-start gap-1 mt-2">
+  {discount ? (
+    <>
+      <span className="text-lg font-bold text-green-600">
+       ${(price * (1 - discount / 100)).toFixed(2)}
+      </span>
+      <span className="text-sm line-through text-muted-foreground">
+        ${price.toFixed(2)}
+      </span>
+    
+    </>
+  ) : (
+    <span className="text-lg font-bold text-foreground">
+      ${price.toFixed(2)}
+    </span>
+  )}
+</div>
 
         {/* Size Options */}
-        <div className="flex items-center gap-2 mt-4">
+        {/* <div className="flex items-center gap-2 mt-4">
           <span className="text-xs text-muted-foreground">Tallas:</span>
           <div className="flex gap-1">
             {['S', 'M', 'L', 'XL'].map((size) => (
@@ -123,7 +130,7 @@ const ProductCard = ({
               </span>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
