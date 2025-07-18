@@ -67,7 +67,7 @@ export default function CheckoutAddress() {
         <div className="md:col-span-2">
           <h2 className="text-xl font-bold text-blue-900 mb-2">INFORMACIÓN DE ENVÍO</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Solicitamos únicamente la información esencial para la finalización de la compra.
+            Solicitamos únicamente la información esencial para la finalización de la compra
           </p>
 
           <form onSubmit={handleStripeCheckout} className="space-y-6">
@@ -142,11 +142,6 @@ export default function CheckoutAddress() {
         <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <h3 className="text-lg font-bold text-blue-800 mb-4 text-center">RESUMEN DE LA COMPRA</h3>
           <div className="flex items-center mb-4">
-            <img
-              src="/example-product.jpg" // Reemplaza con la imagen real
-              alt="Producto"
-              className="w-20 h-20 object-cover rounded-lg mr-4"
-            />
             <div>
               <p className="font-semibold text-sm">.......</p>
               <p className="text-sm">Cantidad: <strong>1</strong></p>
