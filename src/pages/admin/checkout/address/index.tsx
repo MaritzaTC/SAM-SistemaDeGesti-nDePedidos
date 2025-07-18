@@ -142,6 +142,11 @@ export default function CheckoutAddress() {
         <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
           <h3 className="text-lg font-bold text-blue-800 mb-4 text-center">RESUMEN DE LA COMPRA</h3>
           <div className="flex items-center mb-4">
+            <img
+              src="/example-product.jpg" // Reemplaza con la imagen real
+              alt="Producto"
+              className="w-20 h-20 object-cover rounded-lg mr-4"
+            />
             <div>
               <p className="font-semibold text-sm">.......</p>
               <p className="text-sm">Cantidad: <strong>1</strong></p>
