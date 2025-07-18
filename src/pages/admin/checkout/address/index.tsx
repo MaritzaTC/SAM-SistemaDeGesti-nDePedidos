@@ -1,10 +1,37 @@
+import { CartItem } from "@/components/client/CartContext";
 import { useSession, signIn } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function CheckoutAddress() {
   const { data: session } = useSession();
   const [total, setTotal] = useState(0);
+const [cartItems, setCartItems] = useState<CartItem[]>([]);
+const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+const discountAmount = cartItems.reduce((sum, item) => {
+  return sum + (item.discount ? item.price * item.discount / 100 * item.quantity : 0);
+}, 0);
+
+const shipping = subtotal >= 150000 ? 0 : 15000;
+
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat("es-CO", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+  }).format(price);
+useEffect(() => {
+  const savedCart = localStorage.getItem("cart");
+  if (savedCart) {
+    const items: CartItem[] = JSON.parse(savedCart);
+    setCartItems(items);
+  }
+
+  const savedTotal = sessionStorage.getItem("checkoutTotal");
+  if (savedTotal) {
+    setTotal(Number(savedTotal));
+  }
+}, []);
   useEffect(() => {
     const savedTotal = sessionStorage.getItem("checkoutTotal");
     if (savedTotal) {
@@ -131,40 +158,48 @@ const handleStripeCheckout = async (e: React.FormEvent) => {
     </div>
 
     {/* Resumen de la compra */}
-    <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
-      <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
-        Resumen de la compra
-      </h3>
+   <div className="bg-gray-50 p-6 rounded-2xl border border-gray-200 shadow-sm">
+  <h3 className="text-lg font-semibold text-gray-800 mb-6 text-center">
+    Resumen de la compra
+  </h3>
 
-      <div className="flex items-center gap-4 mb-6">
-        <img
-          src="/example-product.jpg"
-          alt="Producto"
-          className="w-20 h-20 object-cover rounded-xl border"
-        />
-        <div className="flex-1">
-          <p className="font-medium text-sm text-gray-700">Nombre del producto</p>
-          <p className="text-sm text-gray-500">Cantidad: <strong>1</strong></p>
-          <p className="text-sm text-blue-700 font-semibold">$369.600</p>
-          <p className="text-xs text-gray-400">Entrega: hasta 8 días hábiles</p>
-        </div>
-      </div>
-
-      <div className="text-sm border-t pt-4 space-y-2">
-        <div className="flex justify-between">
-          <span className="text-gray-600">Subtotal</span>
-          <span className="text-gray-700 font-medium">${total.toLocaleString("es-CO")}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Envío</span>
-          <span className="text-green-600 font-semibold">Gratis</span>
-        </div>
-        <div className="flex justify-between pt-3 border-t text-base font-semibold text-blue-800">
-          <span>Total</span>
-          <span>${total.toLocaleString("es-CO")}</span>
-        </div>
+  {cartItems.map((item) => (
+    <div key={item.id} className="flex items-center gap-4 mb-6">
+      <img
+        src={item.image}
+        alt={item.name}
+        className="w-20 h-20 object-cover rounded-xl border"
+      />
+      <div className="flex-1">
+        <p className="font-medium text-sm text-gray-700">{item.name}</p>
+        <p className="text-sm text-gray-500">Cantidad: <strong>{item.quantity}</strong></p>
+        <p className="text-sm text-blue-700 font-semibold">{formatPrice(item.price)}</p>
       </div>
     </div>
+  ))}
+
+  <div className="text-sm border-t pt-4 space-y-2">
+    <div className="flex justify-between">
+      <span className="text-gray-600">Subtotal</span>
+      <span className="text-gray-700 font-medium">{formatPrice(subtotal)}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-gray-600">Descuento</span>
+      <span className="text-red-600 font-medium">-{formatPrice(discountAmount)}</span>
+    </div>
+    <div className="flex justify-between">
+      <span className="text-gray-600">Envío</span>
+      <span className="text-green-600 font-semibold">
+        {shipping === 0 ? "Gratis" : formatPrice(shipping)}
+      </span>
+    </div>
+    <div className="flex justify-between pt-3 border-t text-base font-semibold text-blue-800">
+      <span>Total</span>
+      <span>{formatPrice(total)}</span>
+    </div>
+  </div>
+</div>
+
   </div>
 </div>
 
