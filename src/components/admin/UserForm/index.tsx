@@ -120,65 +120,97 @@ export const UserForm = ({ user, onClose, onUpdate,  isOwnProfile = false,}: { u
 
   return (
     <div className="space-y-4">
-      <Input
-        value={form.name}
-        placeholder="Nombre"
-       disabled
+    <div className="space-y-4">
+  {/* Nombre */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Nombre</label>
+    <Input
+      value={form.name}
+      disabled
+      placeholder="Nombre"
+    />
+    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+  </div>
+
+  {/* Apellido */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Apellido</label>
+    <Input
+      value={form.lastName}
+      placeholder="Apellido"
+      onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+    />
+    {errors.lastName && <p className="text-sm text-red-500">{errors.lastName}</p>}
+  </div>
+
+  {/* Correo */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Correo electrónico</label>
+    <Input value={form.email} placeholder="Correo electrónico" disabled />
+  </div>
+
+  {/* Imagen */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Foto de perfil</label>
+    <div className="flex items-center gap-4">
+      <img
+        src={form.image || '/default-user.png.jpg'}
+        alt="Usuario"
+        className="w-16 h-16 rounded-full object-cover"
       />
-      {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-
       <Input
-        value={form.lastName}
-        placeholder="Apellido"
-        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+        type="file"
+        onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
       />
-      {errors.lastName && <p className="text-sm text-red-500">{errors.lastName}</p>}
+    </div>
+  </div>
 
-      <Input value={form.email} placeholder="Correo electrónico" disabled />
+  {/* Teléfono */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Teléfono</label>
+    <Input
+      value={form.phone}
+      placeholder="Teléfono"
+      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+    />
+    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+  </div>
 
-      <div className="flex items-center gap-4">
+  {/* Tipo de documento */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Tipo de documento</label>
+    <Select
+      value={form.documentType}
+      onValueChange={(value) => setForm({ ...form, documentType: value })}
+    >
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Tipo de documento" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="CC">Cédula de Ciudadanía</SelectItem>
+        <SelectItem value="TI">Tarjeta de Identidad</SelectItem>
+        <SelectItem value="CE">Cédula de Extranjería</SelectItem>
+        <SelectItem value="NIT">NIT</SelectItem>
+      </SelectContent>
+    </Select>
+    {errors.documentType && <p className="text-sm text-red-500">{errors.documentType}</p>}
+  </div>
 
-        <img
-          src={form.image || '/default-user.png.jpg'}
-          alt="Usuario"
-          className="w-16 h-16 rounded-full object-cover"
-        />
-        <Input
-          type="file"
-          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-        />
-      </div>
+  {/* Número de documento */}
+  <div>
+    <label className="block text-sm font-medium mb-1">Número de documento</label>
+    <Input
+      value={form.documentNumber}
+      placeholder="Número de documento"
+      onChange={(e) => setForm({ ...form, documentNumber: e.target.value })}
+    />
+    {errors.documentNumber && <p className="text-sm text-red-500">{errors.documentNumber}</p>}
+  </div>
 
-      <Input
-        value={form.phone}
-        placeholder="Teléfono"
-        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-      />
-      {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
-
-      <Select
-        value={form.documentType}
-        onValueChange={(value) => setForm({ ...form, documentType: value })}
-      >
-        <SelectTrigger className="w-full">
-          <SelectValue placeholder="Tipo de documento" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="CC">Cédula de Ciudadanía</SelectItem>
-          <SelectItem value="TI">Tarjeta de Identidad</SelectItem>
-          <SelectItem value="CE">Cédula de Extranjería</SelectItem>
-          <SelectItem value="NIT">NIT</SelectItem>
-        </SelectContent>
-      </Select>
-      {errors.documentType && <p className="text-sm text-red-500">{errors.documentType}</p>}
-
-      <Input
-        value={form.documentNumber}
-        placeholder="Número de documento"
-        onChange={(e) => setForm({ ...form, documentNumber: e.target.value })}
-      />
-      {errors.documentNumber && <p className="text-sm text-red-500">{errors.documentNumber}</p>}
-{!isOwnProfile && (
+  {/* Rol */}
+  {!isOwnProfile && (
+    <div>
+      <label className="block text-sm font-medium mb-1">Rol</label>
       <Select
         value={form.role}
         onValueChange={(value) => setForm({ ...form, role: value })}
@@ -192,13 +224,22 @@ export const UserForm = ({ user, onClose, onUpdate,  isOwnProfile = false,}: { u
           <SelectItem value="CLIENTE">Cliente</SelectItem>
         </SelectContent>
       </Select>
-)}
-      <div className="flex justify-end space-x-2">
-        <Button variant="outline" onClick={onClose}>Cancelar</Button>
-        <Button onClick={handleUpdate} disabled={loading}>
-          {loading ? 'Guardando...' : 'Guardar Cambios'}
-        </Button>
-      </div>
+    </div>
+  )}
+
+  {/* Botones */}
+  <div className="flex justify-end space-x-2">
+    {!isOwnProfile && (
+      <Button variant="outline" onClick={onClose}>
+        Cancelar
+      </Button>
+    )}
+    <Button onClick={handleUpdate} disabled={loading}>
+      {loading ? 'Guardando...' : 'Guardar Cambios'}
+    </Button>
+  </div>
+</div>
+
     </div>
   );
 };
