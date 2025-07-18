@@ -37,6 +37,7 @@ const MiPerfil = () => {
   return (
     <div className="max-w-xl mx-auto mt-10 p-4 border rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-4 text-center">Mi Perfil</h2>
+      <h4 className="text-lg text-gray-600 mb-6 text-center">Actualiza tu información personal</h4>
       <UserForm user={user} onClose={() => {}} onUpdate={fetchUserProfile} isOwnProfile={true} />
     </div>
   );
