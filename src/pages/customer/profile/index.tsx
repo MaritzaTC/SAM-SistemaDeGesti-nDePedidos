@@ -9,7 +9,6 @@ const MiPerfil = () => {
   const {
     name,
     email,
-    role,
     phone,
     documentNumber,
     lastName,
@@ -38,11 +37,6 @@ const MiPerfil = () => {
           <div>
             <p className="font-semibold">Email</p>
             <p>{email}</p>
-          </div>
-
-          <div>
-            <p className="font-semibold">Rol</p>
-            <p>{role}</p>
           </div>
 
           <div>

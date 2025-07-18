@@ -67,7 +67,7 @@ export default function CheckoutAddress() {
         <div className="md:col-span-2">
           <h2 className="text-xl font-bold text-blue-900 mb-2">INFORMACIÓN DE ENVÍO</h2>
           <p className="text-sm text-gray-500 mb-6">
-            Solicitamos únicamente la información esencial para la finalización de la compra.
+            Solicitamos únicamente la información esencial para la finalización de la compra
           </p>
 
           <form onSubmit={handleStripeCheckout} className="space-y-6">
