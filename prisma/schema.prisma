@@ -41,23 +41,26 @@ model Session {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  createdAt     DateTime      @default(now())
-  email         String        @unique
-  emailVerified DateTime?     // <-- Agrega esta línea
-  role          Enum_RoleName @default(CLIENTE)
-  documentType  String?
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  email          String        @unique
+  emailVerified  DateTime? // <-- Agrega esta línea
+  role           Enum_RoleName @default(CLIENTE)
+  documentType   String?
   documentNumber String?
-  name          String?
-  lastName      String?
-  phone         String?
-  image         String?
-  addresses     Address[]
-  accounts      Account[]     @relation(name: "AccountToUser")
-  sessions      Session[]     @relation(name: "SessionToUser")
-  deleted       Boolean       @default(false)
-  enabled       Boolean       @default(true)
-  updatedAt     DateTime      @updatedAt
+  name           String?
+  lastName       String?
+  phone          String?
+  image          String?
+  addresses      Address[]
+  accounts       Account[]     @relation(name: "AccountToUser")
+  sessions       Session[]     @relation(name: "SessionToUser")
+  deleted        Boolean       @default(false)
+  enabled        Boolean       @default(true)
+  updatedAt      DateTime      @updatedAt
+  Order          Order[]
+  Receipt        Receipt[]
+  Payment        Payment[]
 }
 
 model Address {
@@ -87,46 +90,33 @@ enum Enum_RoleName {
   CLIENTE
 }
 
-model Client {
-  id        String    @id @default(cuid())
-  name      String
-  email     String    @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  orders    Order[]
-  payments  Payment[]
-  receipts  Receipt[]
-}
-
-
-
 model Product {
-  id          String      @id @default(cuid())
-  name        String
-  category    String    
-  price       Float
-  discount    Float       @default(0)
-  image       String
-  isNew       Boolean     @default(false)
-  stock       Int
-  enabled     Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  sizes       Size[]
-  items       OrderItem[]
+  id        String      @id @default(cuid())
+  name      String
+  category  String
+  price     Float
+  discount  Float       @default(0)
+  image     String
+  isNew     Boolean     @default(false)
+  stock     Int
+  enabled   Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  sizes     Size[]
+  items     OrderItem[]
 }
 
 model Size {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   name      String
   productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
 }
 
 model Order {
   id        String      @id @default(cuid())
-  idClient  String
-  client    Client      @relation(fields: [idClient], references: [id])
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
@@ -156,8 +146,8 @@ model Receipt {
   id        String      @id @default(cuid())
   idOrder   String      @unique
   order     Order       @relation(fields: [idOrder], references: [id])
-  idClient  String
-  client    Client      @relation(fields: [idClient], references: [id])
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   items     OrderItem[]
@@ -175,8 +165,8 @@ model Payment {
   updatedAt DateTime      @updatedAt
   idOrder   String
   order     Order         @relation(fields: [idOrder], references: [id])
-  idClient  String
-  client    Client        @relation(fields: [idClient], references: [id])
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
   data      DataPayment?
 }
 

@@ -1,5 +1,5 @@
 
-import { ShoppingBag, Search, Menu, Heart } from "lucide-react";
+import { ShoppingBag, Menu, } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Cart from "../Cart";
@@ -17,6 +17,9 @@ import {
 
 import { useState } from "react";
 import Link from "next/link";
+import { useCart } from "../CartContext";
+// TODO: Replace the hardcoded cartCount with actual cart logic or context when available.
+
 
 type UserWithRole = {
   address: string;
@@ -30,6 +33,8 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const { data: session } = useSession();
   const user = session?.user as UserWithRole | undefined;
+ const { cartItems } = useCart();
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <>
@@ -42,42 +47,39 @@ const Header = () => {
               <h1 className="text-2xl font-playfair font-bold text-gradient">SAM</h1>
             </div>
 
-           
+
             <nav className="hidden md:flex items-center space-x-8">
               <Link href="/customer/products" className="text-foreground hover:text-primary transition-colors duration-200">
                 Nuevo
               </Link>
               <Link href="/" className="text-foreground hover:text-primary transition-colors duration-200">
-Todo              </Link>
+                Todo              </Link>
             </nav>
 
             {/* Actions */}
             <div className="flex items-center space-x-3">
-              {/* Search */}
+              {/* Search
               <Button variant="ghost" size="icon" className="hover:bg-secondary/50">
                 <Search className="h-5 w-5" />
-              </Button>
+              </Button> */}
 
               {/* Cart */}
-              <Button
-                variant="ghost"
-                size="icon"
-                className="hover:bg-secondary/50 relative"
-                onClick={() => setIsCartOpen(true)}
-              >
-                <ShoppingBag className="h-5 w-5" />
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground"
-                >
-                  3
-                </Badge>
-              </Button>
-
-              {/* Wishlist */}
-              <Button variant="ghost" size="icon" className="hidden sm:flex">
-                <Heart className="h-5 w-5" />
-              </Button>
+          <Button
+        variant="ghost"
+        size="icon"
+        className="hover:bg-secondary/50 relative"
+        onClick={() => setIsCartOpen(true)}
+      >
+        <ShoppingBag className="h-5 w-5" />
+        {cartCount > 0 && (
+          <Badge
+            variant="secondary"
+            className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary text-primary-foreground"
+          >
+            {cartCount}
+          </Badge>
+        )}
+      </Button>
 
               {/* User Menu */}
               {user ? (

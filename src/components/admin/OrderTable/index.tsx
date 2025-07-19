@@ -24,7 +24,7 @@ type Order = {
   total: number;
   tax: number;
   subtotal: number;
-  client: { name: string; email: string };
+  user: { name: string; email: string; documentNumber?: string };
 };
 
 const statusColors: Record<string, string> = {
@@ -41,7 +41,7 @@ const OrderTable: React.FC = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const res = await fetch("/api/order");
+      const res = await fetch("/api/order/create");
       const data = await res.json();
       setOrders(data);
       setFilteredOrders(data);
@@ -58,8 +58,11 @@ const OrderTable: React.FC = () => {
       filtered = filtered.filter(
         (order) =>
           order.id.toLowerCase().includes(search.toLowerCase()) ||
-          order.client.name.toLowerCase().includes(search.toLowerCase()) ||
-          order.client.email.toLowerCase().includes(search.toLowerCase())
+          order.user?.name?.toLowerCase().includes(search.toLowerCase()) ||
+          order.user?.email?.toLowerCase().includes(search.toLowerCase()) ||
+          order.user?.documentNumber
+            ?.toLowerCase()
+            .includes(search.toLowerCase())
       );
     }
     setFilteredOrders(filtered);
@@ -104,8 +107,9 @@ const OrderTable: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>Cliente</TableHead>
+                <TableHead>Nombre</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Numero de Documento</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Fecha</TableHead>
                 <TableHead>Total</TableHead>
@@ -116,7 +120,7 @@ const OrderTable: React.FC = () => {
               {filteredOrders.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={7}
+                    colSpan={8}
                     className="text-center text-muted-foreground"
                   >
                     No se encontraron pedidos.
@@ -126,8 +130,9 @@ const OrderTable: React.FC = () => {
                 filteredOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell className="font-mono">{order.id}</TableCell>
-                    <TableCell>{order.client?.name}</TableCell>
-                    <TableCell>{order.client?.email}</TableCell>
+                    <TableCell>{order.user?.name}</TableCell>
+                    <TableCell>{order.user?.email}</TableCell>
+                    <TableCell>{order.user?.documentNumber}</TableCell>
                     <TableCell>
                       <select
                         className={`rounded px-2 py-1 ${
@@ -156,7 +161,6 @@ const OrderTable: React.FC = () => {
                       })}
                     </TableCell>
                     <TableCell>
-                      {/* Aquí puedes poner botones de ver/editar/eliminar */}
                       <button className="text-primary hover:underline">
                         Ver
                       </button>

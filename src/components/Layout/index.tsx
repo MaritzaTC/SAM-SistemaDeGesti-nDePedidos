@@ -28,7 +28,16 @@ const Layout = ({ children, requireAuth = true }: LayoutProps) => {
 
   if (status === 'unauthenticated') {
     signIn('auth0');
-    return <div>Redirecting...</div>;
+    return  <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-400 via-blue-500 to-blue-700">
+  <div className="text-white text-2xl font-semibold flex items-center gap-2">
+    <span className="flex gap-1 ml-2">
+      <span className="w-6 h-6 bg-white rounded-full animate-bounce [animation-delay:0s]" />
+      <span className="w-6 h-6 bg-white rounded-full animate-bounce [animation-delay:0.2s]" />
+      <span className="w-6 h-6 bg-white rounded-full animate-bounce [animation-delay:0.4s]" />
+    </span>
+  </div>
+</div>
+;
   }
 
   return (

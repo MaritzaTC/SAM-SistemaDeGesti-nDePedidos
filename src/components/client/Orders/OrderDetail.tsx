@@ -20,6 +20,10 @@ type Order = {
     quantity: number;
     price: number;
   }[];
+  user?: {
+    name?: string;
+    email?: string;
+  };
 };
 
 const statusLabels: Record<string, string> = {
@@ -53,6 +57,12 @@ const OrderDetail: React.FC<{ order: Order; onClose: () => void }> = ({
             currency: "COP",
             minimumFractionDigits: 0,
           })}
+        </div>
+        <div className="mb-4">
+          <span className="font-semibold">Cliente: </span>
+          <div className="text-sm text-muted-foreground">
+            {order.user?.name} • {order.user?.email}
+          </div>
         </div>
         <div>
           <span className="font-semibold">Productos:</span>

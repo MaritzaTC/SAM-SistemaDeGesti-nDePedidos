@@ -18,7 +18,7 @@ type Order = {
   total: number;
   tax: number;
   subtotal: number;
-  client: { name: string; email: string };
+  user?: { name: string; email: string };
   items: {
     id: string;
     product: { name: string; image: string };
@@ -33,22 +33,19 @@ const statusColors: Record<string, string> = {
   CANCELED: "bg-red-100 text-red-800",
 };
 
-const OrdersList: React.FC<{ userEmail: string }> = ({ userEmail }) => {
+const OrdersList: React.FC<{ userId: string }> = ({ userId }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
-      // Puedes crear un endpoint /api/customer/orders?email=... o filtrar en frontend
-      const res = await fetch("/api/order");
+      if (!userId) return;
+      const res = await fetch(`/api/order/create?userId=${userId}`);
       const data = await res.json();
-      // Filtra solo los pedidos del cliente autenticado
-      setOrders(
-        data.filter((order: Order) => order.client?.email === userEmail)
-      );
+      setOrders(data);
     };
     fetchOrders();
-  }, [userEmail]);
+  }, [userId]);
 
   return (
     <Card>

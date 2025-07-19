@@ -79,5 +79,5 @@ const FeaturedProducts = () => {
     </section>
   );
 };
-
+(FeaturedProducts as any).noAuth = true;
 export default FeaturedProducts;
