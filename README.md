@@ -1,40 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🧾 SAM - Sistema de Gestión de Pedidos
 
-## Getting Started
+**SAM** es un sistema integral de gestión de pedidos diseñado para una tienda en línea especializada en venta de ropa. La plataforma permite a los usuarios explorar un catálogo de productos actualizado y realizar compras de manera segura.
 
-First, run the development server:
+<br>
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 👥 Integrantes del equipo
+
+- Maritza Tabarez Cárdenas
+- Samuel David Montoya Cano
+- Ana María Vega Angarita
+
+<br>
+
+## 🌐 Página desplegada
+
+🔗 https://sam-order-management-system.vercel.app/
+
+<br>
+
+## ▶️ Video de demostración
+
+📺 [Ver en YouTube](https://www.youtube.com/watch?v=xxxxxxxxxxx)
+
+<br>
+
+## 🚀 Tecnologías utilizadas
+
+- **Next.js** – Framework React para renderizado.
+- **Prisma** – ORM para el acceso y modelado de datos.
+- **Supabase** – Backend como servicio.
+- **Stripe** – Plataforma de pagos para gestionar transacciones seguras.
+- **Tailwind CSS** – Utilizado para el diseño rápido y responsivo.
+
+<br>
+
+## 📦 Funcionalidades principales
+
+- Registro e inicio de sesión de usuarios.
+- Gestión de productos.
+- Realizar pedidos.
+- Integración con Stripe para pagos.
+- Sistema de roles para usuarios.
+
+<br>
+
+## ⚙️ Instalación y configuración
+
+### 1. Clonar el repositorio
+
+```
+git clone https://github.com/MaritzaTC/SAM-SistemaDeGesti-nDePedidos.git
+cd SAM-SistemaDeGesti-nDePedidos
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Instalar dependencias
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+npm install @prisma/client
+npm install prisma --save-dev
+npx prisma generate
+npm install stripe
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+<br>
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+## ▶️ Ejecutar el proyecto
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+npm run dev
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Luego abre tu navegador en `http://localhost:3000`
