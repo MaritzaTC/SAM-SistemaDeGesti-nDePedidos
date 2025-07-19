@@ -20,9 +20,14 @@
 
 ## ▶️ Video de demostración
 
-📺 [Ver en YouTube](https://www.youtube.com/watch?v=xxxxxxxxxxx)
+📺 [Ver en YouTube](https://www.youtube.com/watch?v=xhygD8B6cPY)
 
 <br>
+
+## Rol de Administrador 
+
+usuario:  ana@gmail.com
+password : Password12345.
 
 ## 🚀 Tecnologías utilizadas
 
