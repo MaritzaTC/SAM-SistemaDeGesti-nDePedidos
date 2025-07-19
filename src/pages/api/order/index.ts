@@ -51,7 +51,16 @@ export default async function handler(
           items: true,
         },
       });
-
+for (const item of items) {
+  await prisma.product.update({
+    where: { id: item.id },
+    data: {
+      stock: {
+        decrement: item.quantity, // resta el stock vendido
+      },
+    },
+  });
+}
       return res.status(201).json({ message: "Orden creada", order: newOrder });
     } catch (err: any) {
       return res.status(500).json({ message: err.message || "Error interno" });
