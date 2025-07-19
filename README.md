@@ -2,23 +2,27 @@
 
 **SAM** es un sistema integral de gestión de pedidos diseñado para una tienda en línea especializada en venta de ropa. La plataforma permite a los usuarios explorar un catálogo de productos actualizado y realizar compras de manera segura.
 
+<br>
+
 ## 👥 Integrantes del equipo
 
 - Maritza Tabarez Cárdenas
 - Samuel David Montoya Cano
 - Ana María Vega Angarita
 
+<br>
 
 ## 🌐 Página desplegada
 
 🔗 (https://sam-order-management-system.vercel.app/)
 
+<br>
 
 ## ▶️ Video de demostración
 
 📺 [Ver en YouTube](https://www.youtube.com/watch?v=xxxxxxxxxxx)
 
-
+<br>
 
 ## 🚀 Tecnologías utilizadas
 
@@ -28,7 +32,7 @@
 - **Stripe** – Plataforma de pagos para gestionar transacciones seguras.
 - **Tailwind CSS** – Utilizado para el diseño rápido y responsivo.
 
-
+<br>
 
 ## 📦 Funcionalidades principales
 
@@ -38,7 +42,7 @@
 - Integración con Stripe para pagos.
 - Sistema de roles para usuarios.
 
-
+<br>
 
 ## ⚙️ Instalación y configuración
 
@@ -59,6 +63,7 @@ npx prisma generate
 npm install stripe
 ```
 
+<br>
 
 ## ▶️ Ejecutar el proyecto
 
