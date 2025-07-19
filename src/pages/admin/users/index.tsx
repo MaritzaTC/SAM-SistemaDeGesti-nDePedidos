@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useSession } from "next-auth/react";
@@ -28,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import {  Search, Edit, UserPlus, Shield, User, Crown } from 'lucide-react';
+import { Search, Edit, UserPlus, Shield, User, Crown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -386,18 +387,18 @@ const Index = () => {
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((user, index) => (
                     <TableRow key={user.id || index}>
-                  <TableCell>
-  <div className="flex flex-col items-center justify-center space-y-1">
-    <img
-      src={user.image || '/default-user.png.jpg'}
-      alt={`Foto de ${user.name}`}
-      width={40}
-      height={40}
-      className="rounded-full object-cover"
-    />
-    <span className="text-sm text-center">{user.name || 'Sin nombre'}</span>
-  </div>
-</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col items-center justify-center space-y-1">
+                          <img
+                            src={user.image || '/default-user.png.jpg'}
+                            alt={`Foto de ${user.name}`}
+                            width={40}
+                            height={40}
+                            className="rounded-full object-cover"
+                          />
+                          <span className="text-sm text-center">{user.name || 'Sin nombre'}</span>
+                        </div>
+                      </TableCell>
 
                       <TableCell>{user.email || '—'}</TableCell>
 
@@ -416,7 +417,7 @@ const Index = () => {
                           Editar
                         </Button>
                       </TableCell>
-                      
+
                     </TableRow>
                   ))
                 ) : (
@@ -448,7 +449,7 @@ const Index = () => {
                 setIsEditUserOpen(false);
                 setSelectedUser(null);
               }}
-                onUpdate={fetchUsers}
+              onUpdate={fetchUsers}
             />
           )}
         </DialogContent>

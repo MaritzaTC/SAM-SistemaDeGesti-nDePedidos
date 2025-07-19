@@ -63,7 +63,7 @@ const handleStripeCheckout = async (e: React.FormEvent) => {
   }
 
   try {
-    // 1. Guardar dirección antes de redirigir
+    // 1. Guardar dirección
     const addressRes = await fetch("/api/address", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -76,16 +76,34 @@ const handleStripeCheckout = async (e: React.FormEvent) => {
       }),
     });
 
-    const addressData = await addressRes.json();
-
     if (!addressRes.ok) {
-      throw new Error(addressData.message || "No se pudo guardar la dirección");
+      const { message } = await addressRes.json();
+      throw new Error(message || "Error al guardar la dirección");
     }
 
-    // 2. Guardar datos temporales en sessionStorage
-    sessionStorage.setItem("shippingData", JSON.stringify(formData));
+    // 2. Guardar orden
+    const orderRes = await fetch("/api/order/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: cartItems,
+        subtotal,
+        tax: 0, // o calcula IVA si aplica
+        total,
+      }),
+    });
 
-    // 3. Iniciar pago
+    const orderData = await orderRes.json();
+
+    if (!orderRes.ok) {
+      throw new Error(orderData.message || "No se pudo crear la orden");
+    }
+
+    // 3. Guardar datos temporales
+    sessionStorage.setItem("shippingData", JSON.stringify(formData));
+    sessionStorage.setItem("orderId", orderData.order.id);
+
+    // 4. Redirigir a pasarela de pago
     const paymentRes = await fetch("/api/payment/payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -102,11 +120,13 @@ const handleStripeCheckout = async (e: React.FormEvent) => {
     } else {
       alert("Error al iniciar el pago");
     }
+
   } catch (error) {
     console.error("Checkout error:", error);
     alert("Hubo un problema al procesar tu pedido");
   }
 };
+
 
 
   return (
