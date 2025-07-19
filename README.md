@@ -14,7 +14,7 @@
 
 ## 🌐 Página desplegada
 
-🔗 (https://sam-order-management-system.vercel.app/)
+🔗 https://sam-order-management-system.vercel.app/
 
 <br>
 
