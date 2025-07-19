@@ -1,39 +1,48 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// pages/customer/profile.tsx
+import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import { UserForm } from '@/components/admin/UserForm'; // Ajusta el path si es necesario
+import { Skeleton } from '@/components/ui/skeleton';
 
-import prisma from '@/config/prisma';
-import { options } from '@/pages/api/auth/[...nextauth]';
+const ProfilePage = () => {
+  const { data: session, status } = useSession();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
+  const fetchUserProfile = async () => {
+    try {
+      const res = await fetch('/api/profile');
+      const data = await res.json();
+      setUser(data);
+    } catch (err) {
+      console.error('Error cargando perfil:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const session = await getServerSession(req, res, options);
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchUserProfile();
+    }
+  }, [status]);
 
-  if (!session || !session.user?.email) {
-    return res.status(401).json({ message: 'No autorizado' });
+  if (status === 'loading' || loading) {
+    return <Skeleton className="h-60 w-full" />;
   }
 
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      select: {
-        name: true,
-        email: true,
-        role: true,
-        lastName: true,
-        phone: true,
-        image: true,
-        documentType: true,
-        documentNumber: true,
-      },
-    });
-
-    if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
-
-    return res.status(200).json(user);
-  } catch (err: any) {
-    console.error('Error obteniendo perfil:', err);
-    return res.status(500).json({ message: 'Error interno del servidor' });
+  if (!user) {
+    return <p className="text-center text-red-500">No se pudo cargar el perfil</p>;
   }
-}
+
+  return (
+    <div className="max-w-xl mx-auto mt-10 p-4 border rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4 text-center">Mi Perfil</h2>
+      <UserForm user={user} onClose={() => {}} onUpdate={fetchUserProfile} isOwnProfile={true} />
+    </div>
+  );
+};
+
+export default ProfilePage;
