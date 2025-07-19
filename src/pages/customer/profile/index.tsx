@@ -4,15 +4,12 @@ import { useSession } from "next-auth/react";
 const MiPerfil = () => {
   const { data: session } = useSession();
 
-  if (!session) return <p className="text-center text-gray-500 mt-10">Cargando sesión...</p>;
+  if (!session)
+    return (
+      <p className="text-center text-gray-500 mt-10">Cargando sesión...</p>
+    );
 
-  const {
-    name,
-    email,
-    phone,
-    documentNumber,
-    lastName,
-  } = session.user;
+  const { name, email, phone, documentNumber, lastName } = session.user;
 
   return (
     <div className="min-h-screen bg-white">

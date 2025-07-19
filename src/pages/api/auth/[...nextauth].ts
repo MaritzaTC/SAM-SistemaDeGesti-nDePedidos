@@ -22,17 +22,17 @@ const options: NextAuthOptions = {
   // Proveedores de autenticación
   providers: [
     Auth0Provider({
-  issuer: `https://${process.env.AUTH0_DOMAIN}`,
-  clientId: process.env.AUTH0_CLIENT_ID || "",
-  clientSecret: process.env.AUTH0_CLIENT_SECRET || "",
-  authorization: {
-    params: {
-      response_type: "code",
-      prompt: "login",
-      connection: "Username-Password-Authentication",
-    },
-  },
-}),
+      issuer: `https://${process.env.AUTH0_DOMAIN}`,
+      clientId: process.env.AUTH0_CLIENT_ID || "",
+      clientSecret: process.env.AUTH0_CLIENT_SECRET || "",
+      authorization: {
+        params: {
+          response_type: "code",
+          prompt: "login",
+          connection: "Username-Password-Authentication",
+        },
+      },
+    }),
   ],
 
   // Callbacks para personalizar la sesión
@@ -41,9 +41,9 @@ const options: NextAuthOptions = {
       return {
         ...session,
         user: {
-          ...session.user,   // incluye name, email, image
-          id: user.id,       // agrega el id del usuario
-          role: user.role,   // agrega el rol desde la base de datos
+          ...session.user, // incluye name, email, image
+          id: user.id, // agrega el id del usuario
+          role: user.role, // agrega el rol desde la base de datos
         },
       };
     },
@@ -52,21 +52,21 @@ const options: NextAuthOptions = {
       return `${baseUrl}/`;
     },
   },
-events: {
-  async signIn({ user }) {
-    // Si no tiene rol, le asignamos CLIENTE por defecto
-    const existingUser = await prisma.user.findUnique({
-      where: { id: user.id },
-    });
-
-    if (existingUser && !existingUser.role) {
-      await prisma.user.update({
+  events: {
+    async signIn({ user }) {
+      // Si no tiene rol, le asignamos CLIENTE por defecto
+      const existingUser = await prisma.user.findUnique({
         where: { id: user.id },
-        data: { role: "CLIENTE" },
       });
-    }
+
+      if (existingUser && !existingUser.role) {
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { role: "CLIENTE" },
+        });
+      }
+    },
   },
-},
 
   // Secreto para cifrado de tokens
   secret: process.env.AUTH0_CLIENT_SECRET,
