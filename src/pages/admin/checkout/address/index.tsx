@@ -64,54 +64,90 @@ export default function CheckoutAddress() {
   };
 
   const handleStripeCheckout = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!session) {
-      return signIn("auth0", { callbackUrl: window.location.href });
+  if (!session) {
+    return signIn("auth0", { callbackUrl: window.location.href });
+  }
+
+  try {
+    // 1. Guardar dirección
+    const addressRes = await fetch("/api/address", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        department: formData.department,
+        municipality: formData.municipality,
+        neighborhood: formData.neighborhood,
+        address: formData.address,
+        info: formData.info,
+      }),
+    });
+
+    const addressData = await addressRes.json();
+    if (!addressRes.ok) throw new Error(addressData.message);
+
+    sessionStorage.setItem("shippingData", JSON.stringify(formData));
+
+    // 2. Crear orden
+    const subtotal = cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+    const discount = cartItems.reduce((sum, item) => {
+      return (
+        sum +
+        (item.discount
+          ? (item.price * item.discount) / 100 * item.quantity
+          : 0)
+      );
+    }, 0);
+    const tax = 0; // ajusta si lo necesitas
+    const shipping = subtotal >= 150000 ? 0 : 15000;
+    const total = subtotal - discount + shipping;
+
+    const orderRes = await fetch("/api/order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: cartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        subtotal,
+        tax,
+        total,
+      }),
+    });
+
+    const orderData = await orderRes.json();
+    if (!orderRes.ok) throw new Error(orderData.message);
+
+    console.log("✅ Orden creada", orderData);
+
+    // 3. Ir a Stripe
+    const paymentRes = await fetch("/api/payment/payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amount: total,
+        currency: "cop",
+      }),
+    });
+
+    const paymentData = await paymentRes.json();
+    if (paymentData.url) {
+      window.location.href = paymentData.url;
+    } else {
+      alert("Error al iniciar el pago");
     }
+  } catch (error) {
+    console.error("Checkout error:", error);
+    alert("Hubo un problema al procesar tu pedido");
+  }
+};
 
-    try {
-      const addressRes = await fetch("/api/address", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          department: formData.department,
-          municipality: formData.municipality,
-          neighborhood: formData.neighborhood,
-          address: formData.address,
-          info: formData.info,
-        }),
-      });
-
-      const addressData = await addressRes.json();
-
-      if (!addressRes.ok) {
-        throw new Error(addressData.message || "No se pudo guardar la dirección");
-      }
-
-      sessionStorage.setItem("shippingData", JSON.stringify(formData));
-
-      const paymentRes = await fetch("/api/payment/payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: total,
-          currency: "cop",
-        }),
-      });
-
-      const data = await paymentRes.json();
-
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Error al iniciar el pago");
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Hubo un problema al procesar tu pedido");
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white px-6 py-10">
