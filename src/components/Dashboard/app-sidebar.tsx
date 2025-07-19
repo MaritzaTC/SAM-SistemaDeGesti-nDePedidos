@@ -73,11 +73,7 @@ export function AppSidebar({
             url: '/admin/users',
             icon: IconCreditCard,
           },
-          {
-            title: 'Reportes',
-            url: '/admin/reports',
-            icon: IconCreditCard,
-          },
+        
         ]
       : []),
   ];
