@@ -37,7 +37,7 @@ const OrderFilters: React.FC<Props> = ({
       </div>
       <Input
         className="max-w-xs"
-        placeholder="Buscar por ID, cliente o email..."
+        placeholder="Buscar por ID, usuario o email..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />

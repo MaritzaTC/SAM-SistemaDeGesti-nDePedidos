@@ -41,7 +41,8 @@ const OrderTable: React.FC = () => {
 
   useEffect(() => {
     const fetchOrders = async () => {
-      const res = await fetch("/api/order/create");
+      // CAMBIO: Usa /api/order
+      const res = await fetch("/api/order");
       const data = await res.json();
       setOrders(data);
       setFilteredOrders(data);

@@ -40,7 +40,7 @@ const OrdersList: React.FC<{ userId: string }> = ({ userId }) => {
   useEffect(() => {
     const fetchOrders = async () => {
       if (!userId) return;
-      const res = await fetch(`/api/order/create?userId=${userId}`);
+      const res = await fetch(`/api/order?userId=${userId}`);
       const data = await res.json();
       setOrders(data);
     };

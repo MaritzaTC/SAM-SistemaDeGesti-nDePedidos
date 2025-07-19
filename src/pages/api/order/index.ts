@@ -35,7 +35,7 @@ export default async function handler(
 
       const newOrder = await prisma.order.create({
         data: {
-          userId: user.id,
+          user: { connect: { id: user.id } }, // Relación anidada
           subtotal,
           total,
           tax,
@@ -48,19 +48,20 @@ export default async function handler(
           },
         },
         include: {
+          user: true, // Relación correcta
           items: true,
         },
       });
-for (const item of items) {
-  await prisma.product.update({
-    where: { id: item.id },
-    data: {
-      stock: {
-        decrement: item.quantity, // resta el stock vendido
-      },
-    },
-  });
-}
+      for (const item of items) {
+        await prisma.product.update({
+          where: { id: item.id },
+          data: {
+            stock: {
+              decrement: item.quantity, // resta el stock vendido
+            },
+          },
+        });
+      }
       return res.status(201).json({ message: "Orden creada", order: newOrder });
     } catch (err: any) {
       return res.status(500).json({ message: err.message || "Error interno" });
