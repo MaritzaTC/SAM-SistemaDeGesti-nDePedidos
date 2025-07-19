@@ -104,10 +104,10 @@ const OrderTable: React.FC = () => {
             <TableHeader>
               <TableRow>
                 <TableHead>ID</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Estado</TableHead>
                 <TableHead>Fecha</TableHead>
+                <TableHead>Numero de Documento</TableHead>
+                <TableHead>Estado</TableHead>
+                <TableHead></TableHead>
                 <TableHead>Total</TableHead>
                 <TableHead>Acciones</TableHead>
               </TableRow>
