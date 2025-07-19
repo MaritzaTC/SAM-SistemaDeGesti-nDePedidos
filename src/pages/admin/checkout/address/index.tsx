@@ -125,7 +125,8 @@ export default function CheckoutAddress() {
     if (!orderRes.ok) throw new Error(orderData.message);
 
     console.log("✅ Orden creada", orderData);
-
+localStorage.removeItem("cart");
+setCartItems([]);
     // 3. Ir a Stripe
     const paymentRes = await fetch("/api/payment/payment", {
       method: "POST",
